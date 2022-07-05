@@ -1,6 +1,6 @@
-import Counpon from "../../src/Coupon";
-import Item from "../../src/Item";
-import Order from "../../src/Order";
+import Counpon from "../src/Coupon";
+import Item from "../src/Item";
+import Order from "../src/Order";
 
 describe("Order", () => {
   test("Should not create a order with invalid CPF", () => {
