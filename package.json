@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node src/main.ts",
     "test": "jest",
-    "test:w": "jest --watch",
+    "test:w": "jest --watch --onlyChanged",
     "test:cov": "jest --coverage"
   },
   "keywords": [],
@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.1",
+    "@types/sinon": "^10.0.12",
     "jest": "^28.1.2",
     "sinon": "^14.0.0",
     "ts-jest": "^28.0.5",

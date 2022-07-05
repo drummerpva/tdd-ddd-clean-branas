@@ -1,4 +1,4 @@
-import { validate } from "../src/cpf";
+import { validate } from "../../src/testParttens/cpf";
 
 describe("CPF", () => {
   test("Should validity a CPF", () => {
