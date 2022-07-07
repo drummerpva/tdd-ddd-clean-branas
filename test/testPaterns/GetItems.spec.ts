@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 import sinon from "sinon";
-import Connection from "../../src/testParttens/Connection";
 import GetItems from "../../src/testParttens/GetItems";
+import Connection from "../../src/testParttens/Connection";
 import ItemsRepositoryDatabase from "../../src/testParttens/ItemsRepositoryDatabase";
 import ItemsRepositoryMemory from "../../src/testParttens/ItemsRepositoryMemory";
 
@@ -24,8 +24,8 @@ describe("GetItems", () => {
     const getItems = new GetItems(itemsRepository);
     const items = await getItems.execute();
     expect(items).toHaveLength(3);
-    expect(items[0].description).toBe("CD");
-    expect(items[0].price).toBe(1);
+    expect(items[0].description).toBe("Guitarra");
+    expect(items[0].price).toBe(1000);
   });
 
   test("Should get items list with fake repository", async () => {

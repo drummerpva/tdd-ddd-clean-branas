@@ -1,5 +1,3 @@
-import Item from "./Item";
-
 export default class OrderItem {
   constructor(
     readonly idItem: number,
