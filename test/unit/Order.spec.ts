@@ -60,4 +60,9 @@ describe("Order", () => {
     expect(freight).toBe(260);
     expect(total).toBe(6350);
   });
+
+  test("Should create an order with 3 items and generate a code with pattern AAAAPPPPPPPP", () => {
+    const sut = new Order("077.135.309-08", new Date("2021-03-01T10:00:00"));
+    expect(sut.code.value).toBe("202100000001");
+  });
 });
