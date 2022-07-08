@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import mariadb from "mariadb";
 
 import SimulateFreight from "../../src/application/SimulateFreight";
 import Dimension from "../../src/domain/entity/Dimension";
@@ -9,12 +9,12 @@ import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemReposito
 
 describe("SimulateFreight", () => {
   test("Should simulate order freight", async () => {
-    /* const mysqlConnection = await mysql.createConnection({
+    /* const mysqlConnection = await mariadb.cretePool({
       host: "localhost",
       user: "root",
       password: "root",
       database: "branas",
-    });
+    }).getConnection();
     const connection = new MysqlConnectionAdapter(mysqlConnection);
     const itemRepository = new ItemRepositoryDatabase(connection); */
     const itemRepository = new ItemRepositoryMemory();

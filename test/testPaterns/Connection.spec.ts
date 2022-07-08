@@ -1,10 +1,10 @@
-import mysql from "mysql2/promise";
-import Connection from "../../src/testParttens/Connection";
+import mariadb from "mariadb";
+import MysqlConnectionAdapter from "../../src/infra/database/MysqlConnectionAdapter";
 
 describe("Items", () => {
   let mysqlConnection: any;
   beforeAll(async () => {
-    mysqlConnection = await mysql.createConnection({
+    mysqlConnection = await mariadb.createConnection({
       host: "localhost",
       user: "root",
       password: "root",
@@ -12,10 +12,10 @@ describe("Items", () => {
     });
   });
   afterAll(async () => {
-    await mysqlConnection.close();
+    await mysqlConnection.end();
   });
   test("Should return data from database", async () => {
-    const connection = new Connection(mysqlConnection);
+    const connection = new MysqlConnectionAdapter(mysqlConnection);
     const items = await connection.query("select * from item", []);
     expect(items).toHaveLength(3);
   });

@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import mariadb from "mariadb";
 import sinon from "sinon";
 import GetItems from "../../src/testParttens/GetItems";
 import Connection from "../../src/testParttens/Connection";
@@ -8,7 +8,7 @@ import ItemsRepositoryMemory from "../../src/testParttens/ItemsRepositoryMemory"
 describe("GetItems", () => {
   let mysqlConnection: any;
   beforeAll(async () => {
-    mysqlConnection = await mysql.createConnection({
+    mysqlConnection = await mariadb.createConnection({
       host: "localhost",
       user: "root",
       password: "root",
@@ -16,7 +16,7 @@ describe("GetItems", () => {
     });
   });
   afterAll(async () => {
-    await mysqlConnection.close();
+    await mysqlConnection.end();
   });
   test("Should get items list", async () => {
     const connection = new Connection(mysqlConnection);

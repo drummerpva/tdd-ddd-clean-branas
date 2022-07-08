@@ -3,12 +3,13 @@ import Cpf from "./Cpf";
 import Freight from "./Freight";
 import Item from "./Item";
 import OrderCode from "./OrderCode";
+import OrderCoupon from "./OrderCoupon";
 import OrderItem from "./OrderItem";
 
 export default class Order {
   cpf: Cpf;
   orderItems: OrderItem[];
-  coupon?: Coupon;
+  coupon?: OrderCoupon;
   freight = new Freight();
   code: OrderCode;
 
@@ -29,7 +30,8 @@ export default class Order {
   }
 
   addCoupon(coupon: Coupon) {
-    if (!coupon.isExpired(this.date)) this.coupon = coupon;
+    if (!coupon.isExpired(this.date))
+      this.coupon = new OrderCoupon(coupon.code, coupon.percentage);
   }
 
   getFreight() {

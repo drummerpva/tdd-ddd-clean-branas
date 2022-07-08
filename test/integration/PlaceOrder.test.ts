@@ -1,3 +1,4 @@
+import mariadb from "mariadb";
 import Dimension from "../../src/domain/entity/Dimension";
 import Item from "../../src/domain/entity/Item";
 import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory";
@@ -5,8 +6,19 @@ import OrderRepositoryMemory from "../../src/infra/repository/memory/OrderReposi
 import PlaceOrder from "../../src/application/PlaceOrder";
 import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory";
 import Coupon from "../../src/domain/entity/Coupon";
+import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRepositoryDatabase";
+import MysqlConnectionAdapter from "../../src/infra/database/MysqlConnectionAdapter";
 
 describe("PlaceOrder", () => {
+  let mysqlConn: any;
+  beforeAll(async () => {
+    mysqlConn = await mariadb.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "root",
+      database: "branas",
+    });
+  });
   test("Should make a order", async () => {
     const itemRepository = new ItemRepositoryMemory();
     itemRepository.save(
@@ -16,7 +28,10 @@ describe("PlaceOrder", () => {
       new Item(2, "Amplificador", 5000, new Dimension(50, 50, 50), 20)
     );
     itemRepository.save(new Item(3, "Cabo", 30, new Dimension(10, 10, 10), 1));
-    const orderRepository = new OrderRepositoryMemory();
+    // const orderRepository = new OrderRepositoryMemory();
+
+    const connection = new MysqlConnectionAdapter(mysqlConn);
+    const orderRepository = new OrderRepositoryDatabase(connection);
     const couponRepository = new CouponRepositoryMemory();
     const sut = new PlaceOrder(
       itemRepository,
@@ -33,6 +48,7 @@ describe("PlaceOrder", () => {
     };
     const output = await sut.execute(input);
     expect(output.total).toBe(6350);
+    await connection.close();
   });
 
   test("Should make a order with discount", async () => {
