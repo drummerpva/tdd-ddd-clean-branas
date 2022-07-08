@@ -23,8 +23,15 @@ export default class Order {
     this.code = new OrderCode(date, sequence);
   }
 
+  isDuplicated(item: Item) {
+    return this.orderItems.some(
+      (orderItem) => orderItem.idItem === item.idItem
+    );
+  }
+
   addItem(item: Item, quantity: number) {
     this.freight.addItem(item, quantity);
+    if (this.isDuplicated(item)) throw new Error("Duplicated item");
     const orderItem = new OrderItem(item.idItem, item.price, quantity);
     this.orderItems.push(orderItem);
   }

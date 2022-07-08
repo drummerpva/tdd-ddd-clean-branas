@@ -7,7 +7,9 @@ export default class Item {
     readonly price: number,
     readonly dimension?: Dimension,
     readonly weight?: number
-  ) {}
+  ) {
+    if (weight && weight < 0) throw new Error("Invalid param");
+  }
 
   getVolume() {
     if (this.dimension) return this.dimension.getVolume();

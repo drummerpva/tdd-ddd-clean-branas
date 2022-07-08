@@ -6,4 +6,9 @@ describe("Dimension", () => {
     const volume = sut.getVolume();
     expect(volume).toBe(0.03);
   });
+  test("Shoul throw erro if a value is negative", () => {
+    expect(() => new Dimension(-100, -30, -10)).toThrow(
+      new Error("Invalid param")
+    );
+  });
 });

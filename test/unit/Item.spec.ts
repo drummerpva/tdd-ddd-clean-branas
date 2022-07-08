@@ -9,4 +9,10 @@ describe("Item", () => {
     expect(volume).toBe(0.03);
     expect(density).toBe(100);
   });
+
+  test("Should throw new error on negative weight provided", () => {
+    expect(
+      () => new Item(1, "Guitarra", 1000, new Dimension(100, 30, 10), -3)
+    ).toThrow(new Error("Invalid param"));
+  });
 });

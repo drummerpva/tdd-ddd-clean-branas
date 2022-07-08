@@ -65,4 +65,12 @@ describe("Order", () => {
     const sut = new Order("077.135.309-08", new Date("2021-03-01T10:00:00"));
     expect(sut.code.value).toBe("202100000001");
   });
+
+  test("Should throw error if same item added", () => {
+    const sut = new Order("077.135.309-08");
+    sut.addItem(new Item(1, "Guitarra", 1000), 1);
+    expect(() => sut.addItem(new Item(1, "Guitarra", 1000), 1)).toThrow(
+      new Error("Duplicated item")
+    );
+  });
 });
