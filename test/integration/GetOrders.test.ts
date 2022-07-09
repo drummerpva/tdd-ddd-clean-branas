@@ -1,6 +1,7 @@
 import mariadb from "mariadb";
 import GetOrders from "../../src/application/GetOrders";
 import PlaceOrder from "../../src/application/PlaceOrder";
+import GetOrdersQuery from "../../src/application/query/GetOrdersQuery";
 import Coupon from "../../src/domain/entity/Coupon";
 import Dimension from "../../src/domain/entity/Dimension";
 import Item from "../../src/domain/entity/Item";
@@ -34,7 +35,7 @@ describe("GetOrders", () => {
     await connection.close();
   });
   test("Should get a empty list order list", async () => {
-    const sut = new GetOrders(orderRepository);
+    const sut = new GetOrders(repositoryFactory);
     const output = await sut.execute();
     expect(output).toHaveLength(0);
     await connection.close();
@@ -66,8 +67,11 @@ describe("GetOrders", () => {
     };
     await placeOrder.execute(input);
     await placeOrder.execute(input);
-    const sut = new GetOrders(orderRepository);
+    // console.time("getOrders");
+    // const sut = new GetOrders(repositoryFactory);
+    const sut = new GetOrdersQuery(connection);
     const output = await sut.execute();
+    // console.timeEnd("getOrders");
     expect(output).toHaveLength(2);
     const [order1, order2] = output;
     expect(order1.code).toBe("202100000001");
