@@ -4,9 +4,11 @@ import PlaceOrder from "../../src/application/PlaceOrder";
 import Coupon from "../../src/domain/entity/Coupon";
 import Dimension from "../../src/domain/entity/Dimension";
 import Item from "../../src/domain/entity/Item";
+import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
 import OrderRepository from "../../src/domain/repository/OrderRepository";
 import Connection from "../../src/infra/database/Connection";
 import MysqlConnectionAdapter from "../../src/infra/database/MysqlConnectionAdapter";
+import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
 import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRepositoryDatabase";
 import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory";
 import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory";
@@ -15,6 +17,7 @@ describe("GetOrders", () => {
   let mysqlConnection;
   let connection: Connection;
   let orderRepository: OrderRepository;
+  let repositoryFactory: RepositoryFactory;
   beforeEach(async () => {
     mysqlConnection = await mariadb.createConnection({
       host: "localhost",
@@ -23,7 +26,8 @@ describe("GetOrders", () => {
       database: "branas",
     });
     connection = new MysqlConnectionAdapter(mysqlConnection);
-    orderRepository = new OrderRepositoryDatabase(connection);
+    repositoryFactory = new DatabaseRepositoryFactory(connection);
+    orderRepository = repositoryFactory.createOrderRepository();
     await orderRepository.clear();
   });
   afterEach(async () => {
@@ -49,11 +53,7 @@ describe("GetOrders", () => {
     await couponRepository.save(
       new Coupon("VALE20", 20, new Date("2021-03-10T10:00:00"))
     );
-    const placeOrder = new PlaceOrder(
-      itemRepository,
-      orderRepository,
-      couponRepository
-    );
+    const placeOrder = new PlaceOrder(repositoryFactory);
     const input = {
       cpf: "077.135.309-08",
       orderItems: [

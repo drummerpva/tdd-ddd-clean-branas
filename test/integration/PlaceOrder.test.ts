@@ -10,11 +10,14 @@ import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRe
 import MysqlConnectionAdapter from "../../src/infra/database/MysqlConnectionAdapter";
 import Connection from "../../src/infra/database/Connection";
 import OrderRepository from "../../src/domain/repository/OrderRepository";
+import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
+import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
 
 describe("PlaceOrder", () => {
   let mysqlConnection;
   let connection: Connection;
   let orderRepository: OrderRepository;
+  let repositoryFactory: RepositoryFactory;
   beforeEach(async () => {
     mysqlConnection = await mariadb.createConnection({
       host: "localhost",
@@ -23,7 +26,8 @@ describe("PlaceOrder", () => {
       database: "branas",
     });
     connection = new MysqlConnectionAdapter(mysqlConnection);
-    orderRepository = new OrderRepositoryDatabase(connection);
+    repositoryFactory = new DatabaseRepositoryFactory(connection);
+    orderRepository = repositoryFactory.createOrderRepository();
     await orderRepository.clear();
   });
   afterEach(async () => {
@@ -40,11 +44,7 @@ describe("PlaceOrder", () => {
     itemRepository.save(new Item(3, "Cabo", 30, new Dimension(10, 10, 10), 1));
     // const orderRepository = new OrderRepositoryMemory();
     const couponRepository = new CouponRepositoryMemory();
-    const sut = new PlaceOrder(
-      itemRepository,
-      orderRepository,
-      couponRepository
-    );
+    const sut = new PlaceOrder(repositoryFactory);
     const input = {
       cpf: "077.135.309-08",
       orderItems: [
@@ -71,11 +71,7 @@ describe("PlaceOrder", () => {
     await couponRepository.save(
       new Coupon("VALE20", 20, new Date("2021-03-10T10:00:00"))
     );
-    const sut = new PlaceOrder(
-      itemRepository,
-      orderRepository,
-      couponRepository
-    );
+    const sut = new PlaceOrder(repositoryFactory);
     const input = {
       cpf: "077.135.309-08",
       orderItems: [
@@ -101,11 +97,7 @@ describe("PlaceOrder", () => {
     itemRepository.save(new Item(3, "Cabo", 30, new Dimension(10, 10, 10), 1));
     // const orderRepository = new OrderRepositoryMemory();
     const couponRepository = new CouponRepositoryMemory();
-    const sut = new PlaceOrder(
-      itemRepository,
-      orderRepository,
-      couponRepository
-    );
+    const sut = new PlaceOrder(repositoryFactory);
     const input = {
       cpf: "077.135.309-08",
       orderItems: [

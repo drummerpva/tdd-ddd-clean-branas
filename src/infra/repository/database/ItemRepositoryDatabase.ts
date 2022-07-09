@@ -1,12 +1,24 @@
 import Connection from "../../database/Connection";
 import Item from "../../../domain/entity/Item";
 import ItemRepository from "../../../domain/repository/ItemRepository";
+import Dimension from "../../../domain/entity/Dimension";
 
 export default class ItemRepositoryDatabase implements ItemRepository {
   constructor(readonly connection: Connection) {}
 
-  get(idItem: number): Promise<Item> {
-    throw new Error("Method not implemented.");
+  async get(idItem: number): Promise<Item> {
+    const [itemData] = await this.connection.query(
+      "SELECT * FROM item where id = ?",
+      [idItem]
+    );
+    if (!itemData) throw new Error("Item not foun");
+    return new Item(
+      itemData.id,
+      itemData.nome,
+      itemData.valor,
+      new Dimension(itemData.largura, itemData.altura, itemData.profundidade),
+      itemData.peso
+    );
   }
   save(item: Item): Promise<void> {
     throw new Error("Method not implemented.");
