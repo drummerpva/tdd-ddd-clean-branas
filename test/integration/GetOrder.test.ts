@@ -9,6 +9,8 @@ import OrderRepository from "../../src/domain/repository/OrderRepository";
 import Connection from "../../src/infra/database/Connection";
 import MysqlConnectionAdapter from "../../src/infra/database/MysqlConnectionAdapter";
 import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
+import MemoryQueueAdapter from "../../src/infra/queue/MemoryQueueAdapter";
+import Queue from "../../src/infra/queue/Queue";
 import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory";
 import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory";
 
@@ -17,6 +19,7 @@ describe("GetOrders", () => {
   let connection: Connection;
   let orderRepository: OrderRepository;
   let repositoryFactory: RepositoryFactory;
+  let queue: Queue;
   beforeEach(async () => {
     mysqlConnection = await mariadb.createConnection({
       host: "localhost",
@@ -28,6 +31,7 @@ describe("GetOrders", () => {
     repositoryFactory = new DatabaseRepositoryFactory(connection);
     orderRepository = repositoryFactory.createOrderRepository();
     await orderRepository.clear();
+    queue = new MemoryQueueAdapter();
   });
   test("Should get an order by code", async () => {
     const itemRepository = new ItemRepositoryMemory();
@@ -43,7 +47,7 @@ describe("GetOrders", () => {
     await couponRepository.save(
       new Coupon("VALE20", 20, new Date("2021-03-10T10:00:00"))
     );
-    const placeOrder = new PlaceOrder(repositoryFactory);
+    const placeOrder = new PlaceOrder(repositoryFactory, queue);
     const input = {
       cpf: "077.135.309-08",
       orderItems: [
